@@ -1,0 +1,21 @@
+# Use an official Flutter image as the base
+FROM cirrusci/flutter:latest
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the pubspec files and get dependencies first (for caching)
+COPY pubspec.yaml pubspec.lock ./
+RUN flutter pub get
+
+# Copy the entire project
+COPY . .
+
+# Enable web if needed
+RUN flutter config --enable-web
+
+# Build the Flutter app (for web, use `flutter build web`)
+RUN flutter build apk --release
+
+# Set the command to run the app (if using Flutter web)
+CMD ["flutter", "run"]
